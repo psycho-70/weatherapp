@@ -1,0 +1,57 @@
+.sunny-bg {
+    background: url('/public/suuny.jpg') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    background-attachment: fixed;
+  }
+  
+  .rain-bg {
+    background: url('/public/rain.jpg') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    background-attachment: fixed;
+  }
+  
+  .cloud-bg {
+    background: url('./cloud.jpg') no-repeat center center fixed;
+    background-size: cover;
+    height: 100%;
+    background-attachment: fixed;
+  }
+  
+  /* Dark Mode Styles */
+.dark {
+    background-color: #1a202c;
+    color: #e2e8f0;
+  }
+  
+  .bg-gray-800 {
+    background-color: #2d3748;
+  }
+  .nav-co{
+    background: rgb(237, 125, 49);
+  }
+.nav-co2{
+  background-color: rgb(241, 222, 198);
+}
+  .text-white {
+    color: #ffffff;
+  }
+  
+  .text-black {
+    color: #000000;
+  }
+  
+  /* Light Mode Styles */
+  .bg-gray-300 {
+    background-color: #e2e8f0;
+  }
+  
+  .text-black {
+    color: #000000;
+  }
+  
+
+  .custom-input {
+    padding: 8px 0; /* Vertical padding only */
+  }
