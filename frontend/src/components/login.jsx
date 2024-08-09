@@ -1,16 +1,66 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import React from "react";
 import { AppContext } from "../appContext"; // Update the path accordingly
+import {
+  signInWithProvider,
+  signOutUser,
+  googleProvider,
+  githubProvider,
+  auth,
+} from "../firebase";
+import { onAuthStateChanged, } from "firebase/auth";
 
 const Page = () => {
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
   const { darkMode, setDarkMode } = useContext(AppContext);
 
-  
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe(); // Cleanup subscription on unmount
+  }, []);
+
+  const handleSignIn = async (provider) => {
+    setLoading(true);
+    try {
+      await signInWithProvider(provider);
+      // Redirect or handle success after sign-in if necessary
+    } catch (error) {
+      console.error("Sign-in error:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOutUser();
+      // Handle successful sign-out, such as redirecting the user
+    } catch (error) {
+      console.error("Sign-out error:", error.message);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("User created successfully:", userCredential.user);
+      // Optionally, you can update the user's profile with name and lastName
+      // Redirect or perform other actions after sign-up
+    } catch (error) {
+      console.error("Sign-up error:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={darkMode ? "bg-gray-900 text-white" : "bg-white text-black"}>
@@ -36,7 +86,8 @@ const Page = () => {
         <div className="w-full md:w-1/2">
           <div className="flex flex-col justify-center items-center">
             <button
-              onClick={() => signIn("github")}
+              onClick={() => handleSignIn(githubProvider)}
+              disabled={loading} // Disable the button while loading
               className="w-80 max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline"
             >
               <div className="bg-white p-2 rounded-full">
@@ -48,7 +99,8 @@ const Page = () => {
             </button>
 
             <button
-              onClick={() => signIn("google")}
+              onClick={() => handleSignIn(googleProvider)}
+              disabled={loading} // Disable the button while loading
               className="w-80 max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline mt-5"
             >
               <div className="bg-white p-1 rounded-full">
@@ -60,7 +112,7 @@ const Page = () => {
             </button>
           </div>
 
-          <form className="m-5 flex flex-col">
+          <form className="m-5 flex flex-col" onSubmit={handleSubmit}>
             <div className="m-3 border-b text-center">
               <div className="text-2xl font-bold">Create Your Account</div>
             </div>
@@ -100,6 +152,7 @@ const Page = () => {
             />
             <button
               type="submit"
+              disabled={loading} // Disable button while loading
               className={`mt-5 tracking-wide font-semibold ${darkMode ? "bg-indigo-700 text-gray-100" : "bg-indigo-500 text-gray-100"} py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none`}
             >
               <svg className="w-6 h-6 -ml-2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -107,13 +160,11 @@ const Page = () => {
                 <circle cx="8.5" cy="7" r="4" />
                 <path d="M20 8v6M23 11h-6" />
               </svg>
-              <span className="ml-3">Sign Up</span>
+              <span className="ml-3">{loading ? "Signing Up..." : "Sign Up"}</span>
             </button>
           </form>
         </div>
       </div>
-
-      
     </div>
   );
 };

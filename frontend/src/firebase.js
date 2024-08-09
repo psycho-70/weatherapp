@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, GithubAuthProvider, signInWithPopup, signOut } from "firebase/auth";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, signOut } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB6KViYWAZe1sBqaRrCS8qVwzoXfvE2Q2w",
@@ -12,43 +11,35 @@ const firebaseConfig = {
   measurementId: "G-9L1J2JPX7K"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
 
+// Initialize Firebase Auth
+const auth = getAuth(app);
+
+// Set up providers
 const googleProvider = new GoogleAuthProvider();
 const githubProvider = new GithubAuthProvider();
 
-const signInWithProvider = async (provider) => {
+export const signInWithProvider = async (provider) => {
   try {
     const result = await signInWithPopup(auth, provider);
+    // The signed-in user info
     const user = result.user;
-    await setDoc(doc(db, "users", user.uid), {
-      name: user.displayName,
-      email: user.email,
-      photoURL: user.photoURL
-    });
+    console.log('User signed in: ', user);
     return user;
   } catch (error) {
-    console.error("Error signing in with provider:", error);
-
-    if (error.code === 'auth/cancelled-popup-request') {
-      console.log("Popup was closed by the user before completing the sign-in.");
-    } else if (error.code === 'auth/popup-closed-by-user') {
-      console.log("User closed the popup.");
-    } else {
-      throw error; // Re-throw other errors after logging
-    }
+    console.error('Error during sign-in:', error.message);
   }
 };
 
-const signOutUser = async () => {
+export const signOutUser = async () => {
   try {
     await signOut(auth);
+    console.log('User signed out successfully');
   } catch (error) {
-    console.error("Error signing out:", error);
-    throw error;
+    console.error('Error during sign-out:', error.message);
   }
 };
 
-export { auth, googleProvider, githubProvider, signInWithProvider, signOutUser, db, doc, setDoc };
+export { auth, googleProvider, githubProvider };

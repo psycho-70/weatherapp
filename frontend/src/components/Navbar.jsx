@@ -10,15 +10,16 @@ import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
-import { Autocomplete, Menu, MenuItem, IconButton } from '@mui/material';
+import { Autocomplete, Menu, MenuItem, IconButton, Drawer } from '@mui/material';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { IoSearchOutline, IoCloseOutline } from 'react-icons/io5';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useMediaQuery } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom'; // Updated import
+import { Link, useNavigate } from 'react-router-dom';
 import debounce from 'lodash.debounce';
+import { onAuthStateChanged } from "firebase/auth";
 
 const DarkModeSwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -32,9 +33,7 @@ const DarkModeSwitch = styled(Switch)(({ theme }) => ({
       color: '#fff',
       transform: 'translateX(22px)',
       '& .MuiSwitch-thumb:before': {
-        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-          '#fff',
-        )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
+        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent('#fff')}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
       },
       '& + .MuiSwitch-track': {
         opacity: 1,
@@ -55,9 +54,7 @@ const DarkModeSwitch = styled(Switch)(({ theme }) => ({
       top: 0,
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-        '#fff',
-      )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent('#fff')}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
     },
   },
   '& .MuiSwitch-track': {
@@ -68,21 +65,20 @@ const DarkModeSwitch = styled(Switch)(({ theme }) => ({
 }));
 
 const Navbar = () => {
-  const { setCity, fetchData, darkMode, setDarkMode,user, signOutUser } = useContext(AppContext);
+  const { setCity, fetchData, darkMode, setDarkMode, user, signOutUser } = useContext(AppContext);
   const [value, setValue] = useState('1');
   const [valueIn, setValueIn] = useState('');
   const [citySuggestions, setCitySuggestions] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null); // State for user menu
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);
   const isMobile = useMediaQuery('(max-width: 960px)');
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-   navigate(newValue === '1' ? '/' : newValue === '2' ? '/hourly' : newValue === '3' ? '/blog' : '/airquality');
+    navigate(newValue === '1' ? '/' : newValue === '2' ? '/hourly' : newValue === '3' ? '/blog' : '/airquality');
     fetchData(valueIn, newValue === '1' ? 'current' : newValue === '2' ? 'hourly' : newValue === '3' ? 'blog' : 'airQuality');
   };
-  
 
   const handleClear = () => {
     setValueIn('');
@@ -128,17 +124,17 @@ const Navbar = () => {
     setDarkMode(!darkMode);
   };
 
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleMenuOpen = () => {
+    setMenuOpen(true);
+  };
+
+  const handleMenuClose = () => {
+    setMenuOpen(false);
+    setUserMenuAnchorEl(null);
   };
 
   const handleUserMenuOpen = (event) => {
     setUserMenuAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setUserMenuAnchorEl(null);
   };
 
   const handleSignOut = async () => {
@@ -149,7 +145,6 @@ const Navbar = () => {
     }
     handleMenuClose();
   };
-
 
   return (
     <>
@@ -178,7 +173,7 @@ const Navbar = () => {
                     style: {
                       backgroundColor: darkMode ? '#333' : '#fff',
                       color: darkMode ? '#fff' : '#000',
-                      padding: "8px 0px" /* Vertical padding only */
+                      padding: "8px 0px"
                     },
                     endAdornment: (
                       <InputAdornment position="end">
@@ -198,31 +193,61 @@ const Navbar = () => {
             />
           </form>
         </div>
-        <div>
-          
+        <div >
           {isMobile ? (
             <>
               <IconButton edge="start" color="inherit" aria-label="menu" onClick={handleMenuOpen}>
                 <MenuIcon />
               </IconButton>
-              
-              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+              <Drawer
+      anchor="left"
+      open={menuOpen}
+      onClose={handleMenuClose}
+      PaperProps={{
+        sx: {
+          width: '70%',
+          height: '100%',
+          backgroundColor: darkMode ? '#2d3748' : 'rgb(237, 125, 49);', // Replace '#yourDefaultColor' with your default color
+          color: darkMode ? '#ffffff' : '#000000', // Replace '#000000' with your default color
+        },
+      }}
+    >
+                <MenuItem onClick={handleMenuClose}>
+                  {user ? (
+                    <div className="relative flex gap-3">
+                      <img
+                        src={user.photoURL}
+                        alt="User Avatar"
+                        className="w-10 h-10 rounded-full cursor-pointer"
+                        onClick={handleUserMenuOpen}
+                      />
+                      <button
+                        className='text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2'
+                        onClick={handleSignOut}>Logout</button>
+                      <Menu
+                        anchorEl={userMenuAnchorEl}
+                        open={Boolean(userMenuAnchorEl)}
+                        onClose={handleMenuClose}
+                      >
+                      </Menu>
+                    </div>
+                  ) : (
+                    <Link to="/login">Login</Link>
+                  )}
+                </MenuItem>
                 <MenuItem onClick={handleMenuClose}>
                   <Link to="/favorite">Favorite</Link>
                 </MenuItem>
                 <MenuItem onClick={handleMenuClose}>
                   <Link to="/about">About us</Link>
                 </MenuItem>
-                <MenuItem onClick={handleMenuClose}>
-                  <Link to="/login">Login</Link>
-                </MenuItem>
                 <MenuItem onClick={toggleDarkMode}>
                   <FormControlLabel control={<DarkModeSwitch checked={darkMode} />} label="Dark Mode" />
                 </MenuItem>
-              </Menu>
+              </Drawer>
             </>
           ) : (
-            <ul className="flex items-center gap-5">
+            <ul className={`flex items-center gap-5 `}>
               <li>
                 <FormGroup>
                   <FormControlLabel
@@ -237,16 +262,37 @@ const Navbar = () => {
               <li>
                 <Link to="/about">About us</Link>
               </li>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
+              {user ? (
+                <li>
+                  <div className="relative">
+                    <img
+                      src={user.photoURL}
+                      alt="User Avatar"
+                      className="w-10 h-10 rounded-full cursor-pointer"
+                      onClick={handleUserMenuOpen}
+                    />
+                    <Menu
+                      anchorEl={userMenuAnchorEl}
+                      open={Boolean(userMenuAnchorEl)}
+                      onClose={handleMenuClose}
+                    >
+                      <MenuItem onClick={handleSignOut}>Logout</MenuItem>
+                    </Menu>
+                  </div>
+                </li>
+              ) : (
+                <li>
+                  <Link to="/login">Login</Link>
+                </li>
+              )}
             </ul>
           )}
         </div>
       </header>
       <nav className="flex md:justify-center nav-co2">
         <TabContext value={value}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider'
+ }}>
             <TabList
               onChange={handleChange}
               aria-label="weather tabs"
@@ -260,11 +306,10 @@ const Navbar = () => {
                 },
               }}
             >
-             <Tab label={<Link to="/">Today</Link>} value="1" />
-<Tab label={<Link to="/hourly">Hourly</Link>} value="2" />
-<Tab label={<Link to="/airquality">air Quality</Link>} value="4" />
-<Tab label={<Link to="/blog">Blog</Link>} value="3" />
-
+              <Tab label={<Link to="/">Today</Link>} value="1" />
+              <Tab label={<Link to="/hourly">Hourly</Link>} value="2" />
+              <Tab label={<Link to="/airquality">Air Quality</Link>} value="4" />
+              <Tab label={<Link to="/blog">Blog</Link>} value="3" />
             </TabList>
           </Box>
         </TabContext>
