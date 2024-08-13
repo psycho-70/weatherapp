@@ -13,10 +13,10 @@ const AirQuality = () => {
   const backgroundImageClass = getBackgroundImage();
 
   return (
-    <div className={` min-h-[61.5vh] ${darkMode ?  ' bg-opacity-30 bg-gray-900 text-white' : 'bg-opacity-30 bg-white text-white'} ${backgroundImageClass}`}>
-      <div className="container mx-auto py-8">
-        <div className=" dark:bg-gray-800 rounded-lg mx-auto w-[50%] shadow-lg p-6">
-          <h1 className="text-2xl font-bold mb-4">Air Quality</h1>
+    <div className={` min-h-screen ${darkMode ?  ' bg-opacity-30 bg-gray-900 text-white' : 'bg-opacity-30 bg-white text-white'} ${backgroundImageClass}`}>
+      <div className="container mx-auto ">
+        <div className=" dark:bg-gray-800 rounded-lg mx-auto w-full  md:w-[50%] shadow-lg p-6">
+          <h1 className="text-2xl font-bold text-center mb-4">Air Quality</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
             <div className="card">
               <p className="font-semibold">Air Quality Index: {airQualityData.list[0].main.aqi}</p>

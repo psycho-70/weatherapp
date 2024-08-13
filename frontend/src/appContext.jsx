@@ -119,7 +119,7 @@ export const AppProvider = ({ children }) => {
 
   return (
     <AppContext.Provider value={{
-      city, setCity, weatherData, hourlyData, addFavorite, favorites, airQualityData, error, darkMode, setDarkMode, fetchData, getBackgroundImage, user, signInWithProvider, googleProvider, githubProvider, signOutUser
+      city, setCity, weatherData, hourlyData, setFavorites, favorites, airQualityData, error, darkMode, setDarkMode, fetchData, getBackgroundImage, user, signInWithProvider, googleProvider, githubProvider, signOutUser
     }}>
       {children}
     </AppContext.Provider>

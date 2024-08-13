@@ -1,24 +1,20 @@
 import { useState, useContext, useEffect } from "react";
 import React from "react";
+import { FaGoogle } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
+
 import { AppContext } from "../appContext"; // Update the path accordingly
-import {
-  signInWithProvider,
-  signOutUser,
-  googleProvider,
-  githubProvider,
-  auth,
-} from "../firebase";
-import { onAuthStateChanged, } from "firebase/auth";
+import { signInWithProvider,googleProvider,githubProvider,auth,} from "../firebase";
+import { onAuthStateChanged,createUserWithEmailAndPassword  } from "firebase/auth";
 
 const Page = () => {
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const { darkMode, setDarkMode } = useContext(AppContext);
-
+ 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -38,29 +34,28 @@ const Page = () => {
     }
   };
 
-  const handleSignOut = async () => {
-    try {
-      await signOutUser();
-      // Handle successful sign-out, such as redirecting the user
-    } catch (error) {
-      console.error("Sign-out error:", error.message);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("User created successfully:", userCredential.user);
-      // Optionally, you can update the user's profile with name and lastName
-      // Redirect or perform other actions after sign-up
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        console.log("User created successfully:", userCredential.user);
+        
+        // Reset the form fields
+        setEmail('');
+        setPassword('');
+        
+        // Optionally, you can update the user's profile with name and lastName
+        // Redirect or perform other actions after sign-up
+    
     } catch (error) {
-      console.error("Sign-up error:", error.message);
+        console.error("Sign-up error:", error.message);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
 
   return (
     <div className={darkMode ? "bg-gray-900 text-white" : "bg-white text-black"}>
@@ -91,9 +86,8 @@ const Page = () => {
               className="w-80 max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline"
             >
               <div className="bg-white p-2 rounded-full">
-                <svg className="w-4" viewBox="0 0 533.5 544.3">
-                  {/* GitHub SVG */}
-                </svg>
+              <FaGithub />
+
               </div>
               <span className="ml-4">Sign Up with GitHub</span>
             </button>
@@ -104,35 +98,20 @@ const Page = () => {
               className="w-80 max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline mt-5"
             >
               <div className="bg-white p-1 rounded-full">
-                <svg className="w-6" viewBox="0 0 32 32">
-                  {/* Google SVG */}
-                </svg>
+              <FaGoogle />
+
+
               </div>
               <span className="ml-4">Sign Up with Google</span>
             </button>
           </div>
 
-          <form className="m-5 flex flex-col" onSubmit={handleSubmit}>
+          <form className=" flex flex-col" onSubmit={handleSubmit}>
             <div className="m-3 border-b text-center">
               <div className="text-2xl font-bold">Create Your Account</div>
             </div>
             <div className="flex flex-wrap gap-4 md:m-5">
-              <input
-                className={`px-8 py-4 w-full md:w-60 rounded-lg font-medium ${darkMode ? "bg-gray-800 border-gray-600 placeholder-gray-400" : "bg-gray-600 border-gray-200 placeholder-white"} text-sm focus:outline-none focus:border-gray-400`}
-                type="text"
-                placeholder="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-              <input
-                className={`px-8 py-4 mb-4 md:mb-0 w-full md:w-60 rounded-lg font-medium ${darkMode ? "bg-gray-800 border-gray-600 placeholder-gray-400" : "bg-gray-600 border-gray-200 placeholder-white"} text-sm focus:outline-none focus:border-gray-400`}
-                type="text"
-                placeholder="Last Name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                required
-              />
+             
             </div>
             <input
               className={`px-8 py-4 rounded-lg font-medium ${darkMode ? "bg-gray-800 border-gray-600 placeholder-gray-400" : "bg-gray-600 border-gray-200 placeholder-white"} text-sm focus:outline-none focus:border-gray-400`}
@@ -153,7 +132,7 @@ const Page = () => {
             <button
               type="submit"
               disabled={loading} // Disable button while loading
-              className={`mt-5 tracking-wide font-semibold ${darkMode ? "bg-indigo-700 text-gray-100" : "bg-indigo-500 text-gray-100"} py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none`}
+              className={`my-5 tracking-wide font-semibold ${darkMode ? "bg-indigo-700 text-gray-100" : "bg-indigo-500 text-gray-100"} py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none`}
             >
               <svg className="w-6 h-6 -ml-2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />

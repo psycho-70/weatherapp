@@ -5,8 +5,8 @@ const Hourly = () => {
   const { hourlyData, weatherData, darkMode, getBackgroundImage } = useContext(AppContext);
 
   return (
-    <div className={`flex flex-col items-center justify-center ${getBackgroundImage()} ${darkMode ? 'dark' : ''}`}>
-      <h1 className="text-2xl font-bold mb-4">Hourly Weather Data</h1>
+    <div className={`flex min-h-screen flex-col items-center p-4 ${getBackgroundImage()} ${darkMode ? 'dark' : ''}`}>
+      <h1 className="text-2xl text-white font-bold mb-4">Hourly Weather Data</h1>
       {hourlyData.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {hourlyData.map((hour, index) => (

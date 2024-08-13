@@ -20,6 +20,8 @@ import { useMediaQuery } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import debounce from 'lodash.debounce';
 import { onAuthStateChanged } from "firebase/auth";
+import { FaTwitter, FaInstagram } from 'react-icons/fa';
+import { MdOutlineFacebook } from 'react-icons/md';
 
 const DarkModeSwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -73,6 +75,7 @@ const Navbar = () => {
   const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);
   const isMobile = useMediaQuery('(max-width: 960px)');
   const navigate = useNavigate();
+  const [searchVisible, setSearchVisible] = useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -114,7 +117,7 @@ const Navbar = () => {
     } else {
       setCitySuggestions([]);
     }
-  }, 300);
+  }, );
 
   useEffect(() => {
     fetchCitySuggestions(valueIn);
@@ -149,49 +152,113 @@ const Navbar = () => {
   return (
     <>
       <header className={`flex p-2 items-center space-x-12 justify-between md:justify-evenly mx-auto w-full ${darkMode ? 'bg-gray-800 text-white' : 'nav-co text-black'}`}>
-        <div className="text-lg md:text-3xl font-bold">
-          <Link to="/"><img className='backdrop-invert-0' width={50} height={50} src="./sun.gif" alt="" /></Link>
+        <div className=" ">
+          <Link to="/">
+          <svg
+    version="1.1"
+    id="Layer_1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlnsXlink="http://www.w3.org/1999/xlink"
+    viewBox="0 0 24 24"
+    xmlSpace="preserve"
+    width="60"
+    height="60"
+    fill="currentColor"
+  >
+    <circle cx="12" cy="12" r="5" fill="#FFD700">
+      <animate
+        attributeName="r"
+        values="5;6;5"
+        dur="1s"
+        repeatCount="indefinite"
+      />
+    </circle>
+    <g stroke="#FFD700" strokeWidth="2">
+      <line x1="12" y1="1" x2="12" y2="4" />
+      <line x1="12" y1="20" x2="12" y2="23" />
+      <line x1="1" y1="12" x2="4" y2="12" />
+      <line x1="20" y1="12" x2="23" y2="12" />
+      <line x1="4.5" y1="4.5" x2="6.5" y2="6.5" />
+      <line x1="17.5" y1="17.5" x2="19.5" y2="19.5" />
+      <line x1="4.5" y1="19.5" x2="6.5" y2="17.5" />
+      <line x1="17.5" y1="6.5" x2="19.5" y2="4.5" />
+    </g>
+    <animateTransform
+      attributeName="transform"
+      type="rotate"
+      from="0 12 12"
+      to="360 12 12"
+      dur="5s"
+      repeatCount="indefinite"
+    />
+  </svg>
+          </Link>
         </div>
         <div className="flex">
-          <form onSubmit={handleSubmit} className="flex items-center">
-            <Autocomplete
-              freeSolo
-              className="w-40 md:w-72"
-              options={citySuggestions}
-              inputValue={valueIn}
-              onInputChange={(event, newInputValue) => {
-                setValueIn(newInputValue);
+        <form onSubmit={handleSubmit} className="flex items-center">
+      {/* Search Icon for Mobile */}
+      {!searchVisible && (
+        <IconButton
+          onClick={() => setSearchVisible(true)}
+          className="md:hidden"
+          style={{ color: darkMode ? '#fff' : '#000' }}
+        >
+          <IoSearchOutline />
+        </IconButton>
+      )}
+
+      {/* Search Bar */}
+      {searchVisible && (
+        <Autocomplete
+          freeSolo
+          className="w-40 md:w-72 flex-grow"
+          options={citySuggestions}
+          inputValue={valueIn}
+          onInputChange={(event, newInputValue) => {
+            setValueIn(newInputValue);
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Search"
+              variant="outlined"
+              InputLabelProps={{ style: { color: darkMode ? '#fff' : '#000' } }}
+              InputProps={{
+                ...params.InputProps,
+                style: {
+                  backgroundColor: darkMode ? '#333' : '#fff',
+                  color: darkMode ? '#fff' : '#000',
+                  padding: '8px 0px',
+                },
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {valueIn && (
+                      <IconButton
+                        onClick={handleClear}
+                        style={{
+                          color: darkMode ? '#fff' : '#000',
+                          backgroundColor: darkMode ? '#333' : '#f5f5f5',
+                          borderRadius: '50%',
+                          padding: '8px',
+                          transition: 'background-color 0.3s, color 0.3s',
+                        }}
+                      >
+                        <IoCloseOutline />
+                      </IconButton>
+                    )}
+                    <button type="submit" className="ml-2 bg-white rounded-full p-3">
+                      <IoSearchOutline />
+                    </button>
+                  </InputAdornment>
+                ),
               }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Search"
-                  variant="outlined"
-                  InputLabelProps={{ style: { color: darkMode ? '#fff' : '#000' } }}
-                  InputProps={{
-                    ...params.InputProps,
-                    style: {
-                      backgroundColor: darkMode ? '#333' : '#fff',
-                      color: darkMode ? '#fff' : '#000',
-                      padding: "8px 0px"
-                    },
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        {valueIn && (
-                          <IconButton onClick={handleClear}>
-                            <IoCloseOutline />
-                          </IconButton>
-                        )}
-                        <button type="submit" className="ml-2 bg-white rounded-full p-3">
-                          <IoSearchOutline />
-                        </button>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              )}
             />
-          </form>
+          )}
+        />
+      )}
+
+      
+    </form>
         </div>
         <div >
           {isMobile ? (
@@ -200,29 +267,29 @@ const Navbar = () => {
                 <MenuIcon />
               </IconButton>
               <Drawer
-      anchor="left"
-      open={menuOpen}
-      onClose={handleMenuClose}
-      PaperProps={{
-        sx: {
-          width: '70%',
-          height: '100%',
-          backgroundColor: darkMode ? '#2d3748' : 'rgb(237, 125, 49);', // Replace '#yourDefaultColor' with your default color
-          color: darkMode ? '#ffffff' : '#000000', // Replace '#000000' with your default color
-        },
-      }}
-    >
+                anchor="bottom"
+                open={menuOpen}
+                onClose={handleMenuClose}
+                PaperProps={{
+                  sx: {
+                    width: '70%',
+                    height: '100%',
+                    backgroundColor: darkMode ? '#2d3748' : 'rgb(237, 125, 49);', // Replace '#yourDefaultColor' with your default color
+                    color: darkMode ? '#ffffff' : '#000000', // Replace '#000000' with your default color
+                  },
+                }}
+              >
                 <MenuItem onClick={handleMenuClose}>
                   {user ? (
-                    <div className="relative flex gap-3">
-                      <img
-                        src={user.photoURL}
-                        alt="User Avatar"
-                        className="w-10 h-10 rounded-full cursor-pointer"
-                        onClick={handleUserMenuOpen}
-                      />
+                   <div className="relative flex gap-3">
+                    <img
+        src={user.photoURL ? user.photoURL : "/user.gif"}
+        alt="User Avatar"
+        className={`w-10 h-10 rounded-full cursor-pointer ${darkMode ? 'dark:filter dark:brightness-75' : ''}`}
+        onClick={handleUserMenuOpen}
+      />
                       <button
-                        className='text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2'
+                        className='text-white bg-gradient-to-r from-white/10 via-white/20 to-white/30 backdrop-blur-md hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-white/50 dark:focus:ring-white/80 shadow-lg shadow-white/50 dark:shadow-lg dark:shadow-white/70 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2'
                         onClick={handleSignOut}>Logout</button>
                       <Menu
                         anchorEl={userMenuAnchorEl}
@@ -244,10 +311,16 @@ const Navbar = () => {
                 <MenuItem onClick={toggleDarkMode}>
                   <FormControlLabel control={<DarkModeSwitch checked={darkMode} />} label="Dark Mode" />
                 </MenuItem>
+                <div className="flex justify-center items-center absolute bottom-0 gap-5 p-2">
+                <h3 className="text-lg  font-semibold">Follow Us</h3>
+            <a href="https://web.facebook.com/furqan.don.771/" className="hover:text-gray-400"><MdOutlineFacebook /></a>
+            <a href="https://twitter.com/?lang=en" className="hover:text-gray-400"><FaTwitter /></a>
+            <a href="https://www.instagram.com/furqankhan070/" className="hover:text-gray-400"><FaInstagram /></a>
+          </div>
               </Drawer>
             </>
           ) : (
-            <ul className={`flex items-center gap-5 `}>
+            <ul className={`flex items-center gap-5 text-lg`}>
               <li>
                 <FormGroup>
                   <FormControlLabel
@@ -264,20 +337,20 @@ const Navbar = () => {
               </li>
               {user ? (
                 <li>
-                  <div className="relative">
-                    <img
-                      src={user.photoURL}
-                      alt="User Avatar"
-                      className="w-10 h-10 rounded-full cursor-pointer"
-                      onClick={handleUserMenuOpen}
-                    />
-                    <Menu
-                      anchorEl={userMenuAnchorEl}
-                      open={Boolean(userMenuAnchorEl)}
-                      onClose={handleMenuClose}
-                    >
-                      <MenuItem onClick={handleSignOut}>Logout</MenuItem>
-                    </Menu>
+                 <div className="flex gap-4 relative">
+  <img 
+    src={user.photoURL ? user.photoURL : "/user.gif"}
+    alt="User Avatar"
+    className={`w-10 h-10 rounded-full cursor-pointer ${!user.photoURL && darkMode ? 'invert' : ''}`}
+    onClick={handleUserMenuOpen}
+  />
+
+                    <button
+                      className='text-white bg-gradient-to-r from-white/10 via-white/20 to-white/30 backdrop-blur-md hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-white/50 dark:focus:ring-white/80 shadow-lg shadow-white/50 dark:shadow-lg dark:shadow-white/70 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2'
+
+                      onClick={handleSignOut}>Logout</
+                    button>
+
                   </div>
                 </li>
               ) : (
@@ -291,8 +364,9 @@ const Navbar = () => {
       </header>
       <nav className="flex md:justify-center nav-co2">
         <TabContext value={value}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider'
- }}>
+          <Box sx={{
+            borderBottom: 1, borderColor: 'divider'
+          }}>
             <TabList
               onChange={handleChange}
               aria-label="weather tabs"

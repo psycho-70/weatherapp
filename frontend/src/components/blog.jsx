@@ -32,7 +32,7 @@ const Blog = () => {
 
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-800 text-white' : 'bg-slate-300 text-black'} ${backgroundImage}`}>
-      <h1 className="text-2xl font-bold p-4 text-center">BlogPost</h1>
+      <h1 className="text-2xl font-bold p-4 text-white text-center">BlogPost</h1>
       {error ? (
         <div className="min-h-screen w-full flex justify-center items-center">
           <p className="text-red-500">{error}</p>

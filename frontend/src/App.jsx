@@ -18,6 +18,7 @@ const App = () => {
   return (
    <>
         <Navbar />
+        <ToastContainer />
   <Routes>
         <Route path="/" element={<Section />} />
         <Route path="/hourly" element={<Hourly />} />
