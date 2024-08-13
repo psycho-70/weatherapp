@@ -1,33 +1,85 @@
 import express from "express";
 import bodyParser from "body-parser";
-import db from "./config.js"; // Ensure the path is correct and includes the file extension
-import cors from "cors"; // Import the cors middleware
+import { db, FieldValue } from "./config.js";
+import cors from "cors";
 
 const app = express();
 const port = 3000;
 
-// Middleware
 app.use(bodyParser.json());
-app.use(cors()); // Enable CORS for all origins
+app.use(cors());
 
-// Endpoint to handle user registration
-app.post("/register", async (req, res) => {
-  const { name, lastName, email, password } = req.body;
+// Endpoint to add a favorite location
+app.post("/favorites", async (req, res) => {
+  const { uuid, favoriteLocation, favoriteCountry, temp, description } = req.body;
 
   try {
-    // Store user data in Firestore
-    const userRef = db.collection("logindata").doc(email); // Using email as document ID
+    const userRef = db.collection("favorites").doc(uuid);
     await userRef.set({
-      name,
-      lastName,
-      email,
-      password
-    });
+      favorites: FieldValue.arrayUnion({
+        location: favoriteLocation,
+        country: favoriteCountry,
+        temp,
+        description,
+      }),
+    }, { merge: true });
 
-    res.status(200).send({ message: "User registered successfully" });
+    res.status(200).send({ message: "Favorite added successfully" });
   } catch (error) {
-    console.error("Error registering user:", error);
-    res.status(500).send({ message: "Error registering user" });
+    console.error("Error adding favorite:", error);
+    res.status(500).send({ message: "Error adding favorite" });
+  }
+});
+
+// Endpoint to delete a favorite location
+app.delete("/favorites", async (req, res) => {
+  const { uuid, favoriteLocation } = req.body;
+
+  try {
+    const userRef = db.collection("favorites").doc(uuid);
+    const doc = await userRef.get();
+    const favorites = doc.data().favorites;
+
+    // Find the favorite location object to delete
+    const favoriteToDelete = favorites.find((favorite) => favorite.location === favoriteLocation);
+
+    if (favoriteToDelete) {
+      // Remove the favorite location object from the array
+      await userRef.update({
+        favorites: FieldValue.arrayRemove(favoriteToDelete),
+      });
+
+      res.status(200).send({ message: "Favorite removed successfully" });
+    } else {
+      res.status(404).send({ message: "Favorite not found" });
+    }
+  } catch (error) {
+    console.error("Error removing favorite:", error);
+    res.status(500).send({ message: "Error removing favorite" });
+  }
+});
+
+// Endpoint to fetch all favorites for a user
+app.get("/favorites", async (req, res) => {
+  const { uuid } = req.query;
+
+  if (!uuid) {
+    return res.status(400).send({ message: "UUID is required" });
+  }
+
+  try {
+    const userRef = db.collection("favorites").doc(uuid);
+    const doc = await userRef.get();
+
+    if (doc.exists) {
+      const favorites = doc.data().favorites || [];
+      res.status(200).send({ favorites: favorites.map(favorite => ({ location: favorite.location, country: favorite.country, temp: favorite.temp, description: favorite.description })) });
+    } else {
+      res.status(404).send({ favorites: [] });
+    }
+  } catch (error) {
+    console.error("Error fetching favorites:", error);
+    res.status(500).send({ message: "Error fetching favorites" });
   }
 });
 

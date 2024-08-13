@@ -1,5 +1,6 @@
 import admin from "firebase-admin";
 import serviceAccount from "./serviceAccountKey.json" assert { type: "json" }; // Add assert { type: "json" }
+import {  FieldValue } from 'firebase-admin/firestore';
 
 if (!admin.apps.length) {
   admin.initializeApp({
@@ -9,5 +10,4 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
-
-export default db;
+export { db, FieldValue };
