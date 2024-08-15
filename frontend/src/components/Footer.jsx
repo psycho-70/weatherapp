@@ -9,7 +9,7 @@ const Footer = () => {
   return (
     <>
       <div className={`h-[1px] ${darkMode ? 'bg-white' : 'bg-black'} w-full`}></div>
-      <footer className={`w-full p-4 ${darkMode ? 'bg-gray-800 text-white' : 'nav-co2 text-black'}`}>
+      <footer className={`w-full h-full p-4 ${darkMode ? 'bg-gray-800 text-white' : 'nav-co2 text-black'}`}>
       <div className="w-full gap-3 md:flex justify-evenly items-center">
         <div className="h-20 text-center w-full md:w-1/3">
           <h3 className="text-lg font-semibold">Follow Us</h3>
@@ -28,7 +28,9 @@ const Footer = () => {
           <p className="">&copy; 2024 Weather-APP. All rights reserved.</p>
         </div>
       </div>
-    </footer></>
+      
+    </footer>
+    </>
   );
 };
 

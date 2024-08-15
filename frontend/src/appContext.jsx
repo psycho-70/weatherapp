@@ -1,4 +1,3 @@
-// AppContext.js
 import React, { createContext, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { auth, signInWithProvider, googleProvider, githubProvider, signOutUser } from "./firebase"; // Update the import path
@@ -101,6 +100,18 @@ export const AppProvider = ({ children }) => {
     return '';
   };
 
+  // Automatically switch between dark and light mode based on the user's local time
+  const handleDarkMode = () => {
+    const currentHour = new Date().getHours(); // Get the current hour in the user's local time
+
+    // Enable dark mode during night hours (e.g., between 7 PM and 6 AM)
+    if (currentHour >= 19 || currentHour < 6) {
+      setDarkMode(true);
+    } else {
+      setDarkMode(false);
+    }
+  };
+
   useEffect(() => {
     fetchData(city); // Initial fetch when component mounts
   }, [city]);
@@ -116,6 +127,10 @@ export const AppProvider = ({ children }) => {
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    handleDarkMode(); // Check the time and set dark mode accordingly
+  }, []); // Run only once when the component mounts
 
   return (
     <AppContext.Provider value={{

@@ -10,15 +10,13 @@ import About from './components/about';
 import Login from './components/login';
 import Footer from './components/Footer';
 import BlogPost from './components/blogpost';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
 
 const App = () => {
  
   return (
    <>
         <Navbar />
-        <ToastContainer />
   <Routes>
         <Route path="/" element={<Section />} />
         <Route path="/hourly" element={<Hourly />} />

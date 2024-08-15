@@ -200,7 +200,6 @@ const Navbar = () => {
       {!searchVisible && (
         <IconButton
           onClick={() => setSearchVisible(true)}
-          className="md:hidden"
           style={{ color: darkMode ? '#fff' : '#000' }}
         >
           <IoSearchOutline />
@@ -377,7 +376,7 @@ const Navbar = () => {
                 '& .MuiTab-root': {
                   padding: { xs: 1.8, md: 2 },
                   minWidth: 'auto',
-                },
+                }
               }}
             >
               <Tab label={<Link to="/">Today</Link>} value="1" />
