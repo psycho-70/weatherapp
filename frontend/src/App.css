@@ -1,19 +1,19 @@
 .sunny-bg {
-    background: url('/public/suuny.jpg') no-repeat center center fixed;
+    background: url('/dist/assets/suuny-BTTQsUS5.jpg') no-repeat center center fixed;
     background-size: cover;
     height: 100vh;
     background-attachment: fixed;
   }
   
   .rain-bg {
-    background: url('/public/rain.jpg') no-repeat center center fixed;
+    background: url('/dist/assets/rain-Daswcf_y.jpg') no-repeat center center fixed;
     background-size: cover;
     height: 100vh;
     background-attachment: fixed;
   }
   
   .cloud-bg {
-    background: url('./public/cloud.jpg') no-repeat center center fixed;
+    background: url('/dist/cloud.jpg') no-repeat center center fixed;
     background-size: cover;
     height: 100%;
     background-attachment: fixed;
