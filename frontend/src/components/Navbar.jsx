@@ -283,7 +283,7 @@ const Navbar = () => {
                    <div className="relative flex gap-3">
                     <img
         src={user.photoURL ? user.photoURL : "/user.gif"}
-        alt="User Avatar"
+        alt="User Avatar and picture"
         className={`w-10 h-10 rounded-full cursor-pointer ${darkMode ? 'dark:filter dark:brightness-75' : ''}`}
         onClick={handleUserMenuOpen}
       />
