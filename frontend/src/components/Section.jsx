@@ -4,7 +4,7 @@ import { AppContext } from '../appContext';
 import '../App.css';
 
 const Section = () => {
-  const { city, weatherData, addFavorite, setFavorites, user, error, darkMode, fetchData } = useContext(AppContext);
+  const { city, weatherData, getBackgroundImage, setFavorites, user, error, darkMode, fetchData } = useContext(AppContext);
   const { enqueueSnackbar } = useSnackbar(); // Import the enqueueSnackbar function from notistack
   const [showToast, setShowToast] = useState(false);
 
@@ -60,15 +60,7 @@ const Section = () => {
   }, [city, fetchData, weatherData]);
 
   
-  const getBackgroundImage = () => {
-    if (!weatherData) return '';
-
-    const weatherMain = weatherData.weather[0].main.toLowerCase();
-    if (weatherMain.includes('rain')) return 'rain-bg';
-    if (weatherMain.includes('cloud')) return 'cloud-bg';
-    if (weatherMain.includes('clear')) return 'sunny-bg';
-    return '';
-  };
+  
 
   return (
     <div className={`flex flex-col items-center justify-center ${getBackgroundImage()} ${darkMode ? 'dark' : ''}`}>

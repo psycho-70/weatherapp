@@ -197,67 +197,56 @@ const Navbar = () => {
         <div className="flex">
         <form onSubmit={handleSubmit} className="flex items-center">
       {/* Search Icon for Mobile */}
-      {!searchVisible && (
-        <IconButton
-          onClick={() => setSearchVisible(true)}
-          style={{ color: darkMode ? '#fff' : '#000' }}
-        >
-          <IoSearchOutline />
-        </IconButton>
-      )}
+     
+  {/* Search Bar */}
+  <Autocomplete
+    freeSolo
+    className="w-40 md:w-72 flex-grow"
+    options={citySuggestions}
+    inputValue={valueIn}
+    onInputChange={(event, newInputValue) => {
+      setValueIn(newInputValue);
+    }}
+    renderInput={(params) => (
+      <TextField
+        {...params}
+        label="Search"
+        variant="outlined"
+        InputLabelProps={{ style: { color: darkMode ? '#fff' : '#000' } }}
+        InputProps={{
+          ...params.InputProps,
+          style: {
+            backgroundColor: darkMode ? '#333' : '#fff',
+            color: darkMode ? '#fff' : '#000',
+            padding: '8px 0px',
+          },
+          endAdornment: (
+            <InputAdornment position="end">
+              {valueIn && (
+                <IconButton
+                  onClick={handleClear}
+                  style={{
+                    color: darkMode ? '#fff' : '#000',
+                    backgroundColor: darkMode ? '#333' : '#f5f5f5',
+                    borderRadius: '50%',
+                    padding: '8px',
+                    transition: 'background-color 0.3s, color 0.3s',
+                  }}
+                >
+                  <IoCloseOutline />
+                </IconButton>
+              )}
+              <button type="submit" className="ml-2 bg-white rounded-full p-3">
+                <IoSearchOutline />
+              </button>
+            </InputAdornment>
+          ),
+        }}
+      />
+    )}
+  />
+</form>
 
-      {/* Search Bar */}
-      {searchVisible && (
-        <Autocomplete
-          freeSolo
-          className="w-40 md:w-72 flex-grow"
-          options={citySuggestions}
-          inputValue={valueIn}
-          onInputChange={(event, newInputValue) => {
-            setValueIn(newInputValue);
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Search"
-              variant="outlined"
-              InputLabelProps={{ style: { color: darkMode ? '#fff' : '#000' } }}
-              InputProps={{
-                ...params.InputProps,
-                style: {
-                  backgroundColor: darkMode ? '#333' : '#fff',
-                  color: darkMode ? '#fff' : '#000',
-                  padding: '8px 0px',
-                },
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {valueIn && (
-                      <IconButton
-                        onClick={handleClear}
-                        style={{
-                          color: darkMode ? '#fff' : '#000',
-                          backgroundColor: darkMode ? '#333' : '#f5f5f5',
-                          borderRadius: '50%',
-                          padding: '8px',
-                          transition: 'background-color 0.3s, color 0.3s',
-                        }}
-                      >
-                        <IoCloseOutline />
-                      </IconButton>
-                    )}
-                    <button type="submit" className="ml-2 bg-white rounded-full p-3">
-                      <IoSearchOutline />
-                    </button>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          )}
-        />
-      )}
-
-      
-    </form>
         </div>
         <div >
           {isMobile ? (
