@@ -13,7 +13,7 @@
   }
   
   .cloud-bg {
-    background: url('./cloud.jpg') no-repeat center center fixed;
+    background: url('./public/cloud.jpg') no-repeat center center fixed;
     background-size: cover;
     height: 100%;
     background-attachment: fixed;
