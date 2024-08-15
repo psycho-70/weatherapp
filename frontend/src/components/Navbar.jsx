@@ -305,7 +305,7 @@ const Navbar = () => {
                   <Link to="/favorite">Favorite</Link>
                 </MenuItem>
                 <MenuItem onClick={handleMenuClose}>
-                  <Link to="/about">About us</Link>
+                  <Link to="/about" className='cursor-pointer'>About us</Link>
                 </MenuItem>
                 <MenuItem onClick={toggleDarkMode}>
                   <FormControlLabel control={<DarkModeSwitch checked={darkMode} />} label="Dark Mode" />
