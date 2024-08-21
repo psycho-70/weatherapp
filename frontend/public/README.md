@@ -25,6 +25,34 @@ Welcome to the Weather App! This application provides real-time weather informat
 - **Express.js**: A minimal and flexible Node.js web application framework.
 - **Firebase**: Used for authentication and real-time database.
 
+## Installation
+
+1. Clone the repository:
+    \`\`\`bash
+    git clone https://github.com/your-username/weather-app.git
+    cd weather-app
+    \`\`\`
+
+2. Install dependencies:
+    \`\`\`bash
+    npm install
+    \`\`\`
+
+3. Create a `.env` file in the root directory and add your Firebase and API credentials:
+    \`\`\`env
+    REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
+    REACT_APP_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+    REACT_APP_FIREBASE_PROJECT_ID=your_firebase_project_id
+    REACT_APP_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
+    REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
+    REACT_APP_FIREBASE_APP_ID=your_firebase_app_id
+    REACT_APP_WEATHER_API_KEY=your_weather_api_key
+    \`\`\`
+
+4. Start the development server:
+    \`\`\`bash
+    npm start
+    \`\`\`
 
 ## Usage
 
