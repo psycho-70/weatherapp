@@ -33,17 +33,17 @@ Welcome to the Weather App! This application provides real-time weather informat
 Here are some screenshots of the application:
 
 <p align="center">
-  <img src="/public/w1.png" alt="Weather Screenshot 1" width="250" />
-  <img src="public/w2.png" alt="Weather Screenshot 2" width="250" />
-  <img src="public/w3.png" alt="Weather Screenshot 3" width="250" />
+  <img src="/public/w1.PNG" alt="Weather Screenshot 1" width="250" />
+  <img src="public/w2.PNG" alt="Weather Screenshot 2" width="250" />
+  <img src="public/w3.PNG" alt="Weather Screenshot 3" width="250" />
 </p>
 <p align="center">
-  <img src="public/w4.png" alt="Weather Screenshot 4" width="250" />
-  <img src="public/w5.png" alt="Weather Screenshot 5" width="250" />
-  <img src="public/w6.png" alt="Weather Screenshot 6" width="250" />
+  <img src="public/w4.PNG" alt="Weather Screenshot 4" width="250" />
+  <img src="public/w5.PNG" alt="Weather Screenshot 5" width="250" />
+  <img src="public/w6.PNG" alt="Weather Screenshot 6" width="250" />
 </p>
 <p align="center">
-  <img src="public/w7.png" alt="Weather Screenshot 7" width="250" />
+  <img src="public/w7.PNG" alt="Weather Screenshot 7" width="250" />
 </p>
 
 
