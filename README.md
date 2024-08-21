@@ -12,6 +12,8 @@ Welcome to the Weather App! This application provides real-time weather informat
 - **Blog:** Read blog posts related to weather and environmental topics.
 - **Authentication:** Log in with Google or GitHub using Firebase Authentication.
 - **Responsive Design:** The app is fully responsive and works seamlessly on all devices.
+- **Dark Mode:** Toggle between light and dark mode for a comfortable viewing experience.
+
 
 ## Technologies Used
 
@@ -24,6 +26,25 @@ Welcome to the Weather App! This application provides real-time weather informat
 - **Node.js**: A JavaScript runtime built on Chrome's V8 engine.
 - **Express.js**: A minimal and flexible Node.js web application framework.
 - **Firebase**: Used for authentication and real-time database.
+
+
+## Screenshots
+
+Here are some screenshots of the application:
+
+<p align="center">
+  <img src="public/w1.png" alt="Weather Screenshot 1" width="250" />
+  <img src="public/w2.png" alt="Weather Screenshot 2" width="250" />
+  <img src="public/w3.png" alt="Weather Screenshot 3" width="250" />
+</p>
+<p align="center">
+  <img src="public/w4.png" alt="Weather Screenshot 4" width="250" />
+  <img src="public/w5.png" alt="Weather Screenshot 5" width="250" />
+  <img src="public/w6.png" alt="Weather Screenshot 6" width="250" />
+</p>
+<p align="center">
+  <img src="public/w7.png" alt="Weather Screenshot 7" width="250" />
+</p>
 
 
 ## Usage
