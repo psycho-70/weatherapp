@@ -11,7 +11,7 @@ const BlogPost = () => {
     if (!id) return;
 
     const fetchArticle = async () => {
-        const apiKey = import.meta.env.NEWSAPI_KEY;
+        const apiKey = import.meta.env.VITE_NEWSAPI_KEY;
 
       const res = await fetch(`https://newsapi.org/v2/everything?q=${encodeURIComponent(id)}&apiKey=${apiKey}`);
       const data = await res.json();
