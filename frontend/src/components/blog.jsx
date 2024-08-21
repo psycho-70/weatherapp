@@ -12,10 +12,12 @@ const Blog = () => {
       try {
         const apiKey = import.meta.env.VITE_NEWSAPI_KEY;
         const res = await fetch(`https://newsapi.org/v2/everything?q=technology&apiKey=${apiKey}`);
+        console.log('Response status:', res.status);
         if (!res.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error(`Network response was not ok: ${res.statusText}`);
         }
         const result = await res.json();
+        console.log('Fetched data:', result);
         if (result.status === "error") {
           throw new Error(result.message);
         }
@@ -27,7 +29,7 @@ const Blog = () => {
     
     fetchData();
   }, []);
-
+  
   const backgroundImage = getBackgroundImage();
 
   return (
