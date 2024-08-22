@@ -1,10 +1,9 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { db, FieldValue } from "./config.js";
+import { db, FieldValue } from "../config.js";
 import cors from "cors";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(cors({
@@ -14,7 +13,7 @@ app.use(cors({
 }));
 
 // Endpoint to add a favorite location
-app.post("/favorites", async (req, res) => {
+app.post("/api/favorites", async (req, res) => {
   const { uuid, favoriteLocation, favoriteCountry, temp, description } = req.body;
 
   try {
@@ -36,7 +35,7 @@ app.post("/favorites", async (req, res) => {
 });
 
 // Endpoint to delete a favorite location
-app.delete("/favorites", async (req, res) => {
+app.delete("/api/favorites", async (req, res) => {
   const { uuid, favoriteLocation } = req.body;
 
   try {
@@ -44,11 +43,9 @@ app.delete("/favorites", async (req, res) => {
     const doc = await userRef.get();
     const favorites = doc.data().favorites;
 
-    // Find the favorite location object to delete
     const favoriteToDelete = favorites.find((favorite) => favorite.location === favoriteLocation);
 
     if (favoriteToDelete) {
-      // Remove the favorite location object from the array
       await userRef.update({
         favorites: FieldValue.arrayRemove(favoriteToDelete),
       });
@@ -64,7 +61,7 @@ app.delete("/favorites", async (req, res) => {
 });
 
 // Endpoint to fetch all favorites for a user
-app.get("/favorites", async (req, res) => {
+app.get("/api/favorites", async (req, res) => {
   const { uuid } = req.query;
 
   if (!uuid) {
@@ -77,7 +74,12 @@ app.get("/favorites", async (req, res) => {
 
     if (doc.exists) {
       const favorites = doc.data().favorites || [];
-      res.status(200).send({ favorites: favorites.map(favorite => ({ location: favorite.location, country: favorite.country, temp: favorite.temp, description: favorite.description })) });
+      res.status(200).send({ favorites: favorites.map(favorite => ({
+        location: favorite.location,
+        country: favorite.country,
+        temp: favorite.temp,
+        description: favorite.description,
+      })) });
     } else {
       res.status(404).send({ favorites: [] });
     }
@@ -87,6 +89,4 @@ app.get("/favorites", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+export default app;
