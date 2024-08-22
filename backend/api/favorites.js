@@ -1,10 +1,12 @@
 import { db, FieldValue } from "../config.js";
 
 export default async function handler(req, res) {
-  if (req.method === "POST") {
-    // Endpoint to add a favorite location
-    const { uuid, favoriteLocation, favoriteCountry, temp, description } = req.body;
-    try {
+  try {
+    if (req.method === "POST") {
+      const { uuid, favoriteLocation, favoriteCountry, temp, description } = req.body;
+      if (!uuid || !favoriteLocation || !favoriteCountry || temp === undefined || !description) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
       const userRef = db.collection("favorites").doc(uuid);
       await userRef.set({
         favorites: FieldValue.arrayUnion({
@@ -15,18 +17,14 @@ export default async function handler(req, res) {
         }),
       }, { merge: true });
       res.status(200).json({ message: "Favorite added successfully" });
-    } catch (error) {
-      console.error("Error adding favorite:", error);
-      res.status(500).json({ message: "Error adding favorite" });
-    }
-  } else if (req.method === "DELETE") {
-    // Endpoint to delete a favorite location
-    const { uuid, favoriteLocation } = req.body;
-    try {
+    } else if (req.method === "DELETE") {
+      const { uuid, favoriteLocation } = req.body;
+      if (!uuid || !favoriteLocation) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
       const userRef = db.collection("favorites").doc(uuid);
       const doc = await userRef.get();
-      const favorites = doc.data().favorites;
-
+      const favorites = doc.data()?.favorites || [];
       const favoriteToDelete = favorites.find((favorite) => favorite.location === favoriteLocation);
       if (favoriteToDelete) {
         await userRef.update({
@@ -36,17 +34,11 @@ export default async function handler(req, res) {
       } else {
         res.status(404).json({ message: "Favorite not found" });
       }
-    } catch (error) {
-      console.error("Error removing favorite:", error);
-      res.status(500).json({ message: "Error removing favorite" });
-    }
-  } else if (req.method === "GET") {
-    // Endpoint to fetch all favorites for a user
-    const { uuid } = req.query;
-    if (!uuid) {
-      return res.status(400).json({ message: "UUID is required" });
-    }
-    try {
+    } else if (req.method === "GET") {
+      const { uuid } = req.query;
+      if (!uuid) {
+        return res.status(400).json({ message: "UUID is required" });
+      }
       const userRef = db.collection("favorites").doc(uuid);
       const doc = await userRef.get();
       if (doc.exists) {
@@ -60,11 +52,11 @@ export default async function handler(req, res) {
       } else {
         res.status(404).json({ favorites: [] });
       }
-    } catch (error) {
-      console.error("Error fetching favorites:", error);
-      res.status(500).json({ message: "Error fetching favorites" });
+    } else {
+      res.status(405).json({ message: "Method not allowed" });
     }
-  } else {
-    res.status(405).json({ message: "Method not allowed" });
+  } catch (error) {
+    console.error("Unhandled error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 }
