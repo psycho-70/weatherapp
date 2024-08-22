@@ -4,7 +4,10 @@
   "builds": [
     {
       "src": "api/favorites.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": "backend/serviceAccountKey.json"
+      }
     }
   ],
   "routes": [
