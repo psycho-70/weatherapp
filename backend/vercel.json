@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "project-backend",
+  "name": "weatherapp-backend",
   "builds": [
     {
       "src": "api/favorites.js",

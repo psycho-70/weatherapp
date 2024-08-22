@@ -1,4 +1,4 @@
-import { db, FieldValue } from "../config.js";
+import { db, FieldValue } from "../config";
 
 export default async function handler(req, res) {
   try {
