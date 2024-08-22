@@ -12,6 +12,11 @@
       "src": "/api/(.*)",
       "dest": "/api/favorites.js"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/favorites",
+      "schedule": "0 10 * * *"  
+    }
   ]
 }
-
