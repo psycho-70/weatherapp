@@ -13,7 +13,7 @@ const Section = () => {
       enqueueSnackbar('Please create your account', { variant: 'error' });
       return;
     }
-
+  
     try {
       const response = await fetch('https://weatherapp-backend-ochre.vercel.app/favorites', {
         method: 'POST',
@@ -28,20 +28,23 @@ const Section = () => {
           description: weatherData.weather[0].description,
         }),
       });
-
+  
       if (!response.ok) {
-        throw new Error('Failed to add favorite');
+        const errorText = await response.text();
+        throw new Error(`Failed to add favorite: ${response.status} ${response.statusText} - ${errorText}`);
       }
-      
+  
       enqueueSnackbar('Added to Favorite.', { variant: 'success' });
-
+  
       const result = await response.json();
       setFavorites(prevFavorites => [...prevFavorites, result.favoriteLocation]);
       console.log(result);
     } catch (error) {
-      console.error("Error adding favorite:", error);
+      console.error("Error adding favorite:", error.message || error);
+      enqueueSnackbar(`Failed to add favorite: ${error.message}`, { variant: 'error' });
     }
   }
+  
 
   useEffect(() => {
     if (showToast) {
