@@ -1,6 +1,5 @@
 # Ignore backend specific files
 backend/node_modules/
 node_modules/
-backend/serviceAccountKey.json
 .vercel
 public
