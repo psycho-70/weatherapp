@@ -38,7 +38,7 @@ const Section = () => {
   
       const result = await response.json();
       setFavorites(prevFavorites => [...prevFavorites, result.favoriteLocation]);
-      console.log(result);
+     
     } catch (error) {
       console.error("Error adding favorite:", error.message || error);
       enqueueSnackbar(`Failed to add favorite: ${error.message}`, { variant: 'error' });
