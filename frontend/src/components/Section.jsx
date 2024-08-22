@@ -15,7 +15,7 @@ const Section = () => {
     }
   
     try {
-      const response = await fetch('https://weatherapp-backend-ochre.vercel.app/favorites', {
+      const response = await fetch('https://weatherapp-backend-furqan-khans-projects.vercel.app/favorites', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

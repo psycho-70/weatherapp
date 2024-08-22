@@ -12,7 +12,7 @@ const Favorite = () => {
       return;
     }
 
-    const response = await fetch(`https://weatherapp-backend-ochre.vercel.app/favorites?uuid=${user.uid}`, {
+    const response = await fetch(`https://weatherapp-backend-furqan-khans-projects.vercel.app/favorites?uuid=${user.uid}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ const Favorite = () => {
       return;
     }
 
-    const response = await fetch('https://weatherapp-backend-ochre.vercel.app/favorites', {
+    const response = await fetch('https://weatherapp-backend-furqan-khans-projects.vercel.app/favorites', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
