@@ -17,6 +17,10 @@ app.use(cors({
 app.post("/favorites", async (req, res) => {
   const { uuid, favoriteLocation, favoriteCountry, temp, description } = req.body;
 
+  if (!uuid || !favoriteLocation || !favoriteCountry || !temp || !description) {
+    return res.status(400).send({ message: "All fields are required" });
+  }
+
   try {
     const userRef = db.collection("favorites").doc(uuid);
     await userRef.set({
@@ -31,10 +35,10 @@ app.post("/favorites", async (req, res) => {
     res.status(200).send({ message: "Favorite added successfully" });
   } catch (error) {
     console.error("Error adding favorite:", error);
-    res.status(500).send({ message: "Error adding favorite" });
-res.send("submit the post req")    
+    res.status(500).send({ message: "Error adding favorite", error: error.message });
   }
 });
+
 
 // Endpoint to delete a favorite location
 app.delete("/favorites", async (req, res) => {
