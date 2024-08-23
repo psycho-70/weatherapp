@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(cors({
-  origin: 'https://weatherapp-lilac-xi.vercel.app/', // Replace with your actual frontend URL
+  origin: 'https://weatherapp-lilac-xi.vercel.app', // Replace with your actual frontend URL
   methods: ['GET', 'POST', 'DELETE'],
   allowedHeaders: ['Content-Type'],
 }));
