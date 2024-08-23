@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { AppContext } from '../appContext';
 import { useSnackbar } from 'notistack';
 
 const Favorite = () => {
   const { favorites, darkMode, setFavorites, user } = useContext(AppContext);
   const { enqueueSnackbar } = useSnackbar();
-  const [loading, setLoading] = useState(false);
 
   const fetchFavorites = async () => {
     if (!user?.uid) {
@@ -13,23 +12,18 @@ const Favorite = () => {
       return;
     }
 
-    try {
-      const response = await fetch(`https://weatherapp-backend-ochre.vercel.app/favorites?uuid=${user.uid}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+    const response = await fetch(`https://weatherapp-backend-ochre.vercel.app/favorites?uuid=${user.uid}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-      if (response.ok) {
-        const result = await response.json();
-        if (Array.isArray(result.favorites)) {
-          setFavorites(result.favorites.filter(fav => fav && fav.location));
-        }
+    if (response.ok) {
+      const result = await response.json();
+      if (Array.isArray(result.favorites)) {
+        setFavorites(result.favorites.filter(fav => fav && fav.location));
       }
-    } catch (error) {
-      console.error('Error fetching favorites:', error);
-      enqueueSnackbar('Failed to fetch favorites', { variant: 'error' });
     }
   };
 
@@ -43,31 +37,22 @@ const Favorite = () => {
       return;
     }
 
-    setLoading(true);  // Disable the button
+    const response = await fetch('https://weatherapp-backend-ochre.vercel.app/favorites', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        uuid: user.uid,
+        favoriteLocation,
+      }),
+    });
 
-    try {
-      const response = await fetch('https://weatherapp-backend-ochre.vercel.app/favorites', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          uuid: user.uid,
-          favoriteLocation,
-        }),
-      });
-
-      if (response.ok) {
-        enqueueSnackbar('Favorite deleted successfully', { variant: 'success' });
-        fetchFavorites(); // Refresh the favorites list
-      } else {
-        enqueueSnackbar('Failed to delete favorite', { variant: 'error' });
-      }
-    } catch (error) {
-      console.error('Error deleting favorite:', error);
+    if (response.ok) {
+      enqueueSnackbar('Favorite deleted successfully', { variant: 'success' });
+      fetchFavorites(); // Refresh the favorites list
+    } else {
       enqueueSnackbar('Failed to delete favorite', { variant: 'error' });
-    } finally {
-      setLoading(false);  // Re-enable the button
     }
   };
 
@@ -98,9 +83,8 @@ const Favorite = () => {
                   <button
                     onClick={() => handleDeleteFavorite(favorite.location)}
                     className="text-white bg-gradient-to-r from-red-500 via-red-600 to-red-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-                    disabled={loading}  // Disable the button while loading
                   >
-                    {loading ? 'Deleting...' : 'Delete'}
+                    Delete
                   </button>
                 </li>
               );
