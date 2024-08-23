@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import { AppContext } from '../appContext';
 import '../App.css';
-import axios from 'axios';
 
 const Section = () => {
   const { city, weatherData, getBackgroundImage, setFavorites, user, error, darkMode, fetchData } = useContext(AppContext);
@@ -16,27 +15,35 @@ const Section = () => {
     }
   
     try {
-      const response = await axios.post('https://weatherapp-backend-ochre.vercel.app/favorites', {
-        uuid: user.uid,
-        favoriteLocation: weatherData.name,
-        favoriteCountry: weatherData.sys.country,
-        temp: weatherData.main.temp,
-        description: weatherData.weather[0].description,
+      const response = await fetch('https://weatherapp-backend-ochre.vercel.app/favorites', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uuid: user.uid,
+          favoriteLocation: weatherData.name,
+          favoriteCountry: weatherData.sys.country,
+          temp: weatherData.main.temp,
+          description: weatherData.weather[0].description,
+        }),
       });
   
-      if (!response.data) {
-        throw new Error('Failed to add favorite');
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to add favorite: ${response.status} ${response.statusText} - ${errorText}`);
       }
   
       enqueueSnackbar('Added to Favorite.', { variant: 'success' });
   
-      const result = response.data;
+      const result = await response.json();
       setFavorites(prevFavorites => [...prevFavorites, result.favoriteLocation]);
+     
     } catch (error) {
       console.error("Error adding favorite:", error.message || error);
       enqueueSnackbar(`Failed to add favorite: ${error.message}`, { variant: 'error' });
     }
-  };
+  }
   
 
   useEffect(() => {
