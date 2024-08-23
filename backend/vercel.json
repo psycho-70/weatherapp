@@ -3,7 +3,7 @@
   "name": "weatherapp-backend",
   "builds": [
     {
-      "src": "api/favorites.js",
+      "src": "server.js",
       "use": "@vercel/node",
       "config": {
         "includeFiles": "backend/serviceAccountKey.json"
@@ -12,13 +12,13 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/favorites.js"
+      "src": "/(.*)",
+      "dest": "/server.js"
     }
   ],
   "crons": [
     {
-      "path": "/api/favorites",
+      "path": "/server",
       "schedule": "0 10 * * *"  
     }
   ]
