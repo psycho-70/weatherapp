@@ -35,7 +35,7 @@ export const AppProvider = ({ children }) => {
       const responseData = await response.json();
       setWeatherData(responseData);
       setError(null);
-      console.log(responseData);
+      
 
       // Fetch hourly data based on the coordinates
       fetchHourlyData(responseData.coord.lat, responseData.coord.lon);
@@ -59,7 +59,7 @@ export const AppProvider = ({ children }) => {
 
       const responseData = await response.json();
       setHourlyData(responseData.list.slice(0, 12)); // Fetch next 12 hours
-      console.log(responseData.list.slice(0, 12));
+      
     } catch (error) {
       setHourlyData([]);
       setError('Failed to fetch hourly data.');
@@ -83,7 +83,7 @@ export const AppProvider = ({ children }) => {
 
       const responseData = await response.json();
       setAirQualityData(responseData); // Set the air quality data
-      console.log(responseData);
+    
     } catch (error) {
       setAirQualityData(null);
       setError('Failed to fetch air quality data.');
