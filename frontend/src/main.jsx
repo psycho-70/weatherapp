@@ -13,8 +13,7 @@ import { SnackbarProvider } from 'notistack';
 // Creating a dark theme using createTheme
 const darkTheme = createTheme({
   palette: {
-    // Uncomment the mode to enable dark mode
-    // mode: 'dark',
+    
   }
 });
 
