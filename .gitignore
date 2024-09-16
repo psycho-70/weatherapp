@@ -3,4 +3,4 @@ backend/node_modules/
 node_modules/
 .vercel
 public
-backend/serviceAccountKey.json/
+backend/serviceAccountKey.json
