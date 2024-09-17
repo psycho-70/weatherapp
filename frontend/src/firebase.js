@@ -13,7 +13,7 @@ const firebaseConfig = {
 };
 
 
-
+// add new comment
 const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase Auth
